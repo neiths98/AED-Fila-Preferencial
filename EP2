@@ -68,14 +68,7 @@ void exibirLog(PFILA f){
 }
 
 
-int consultarIdade(PFILA f, int id){
-    PONT atual = f->cabeca->prox;
-    while (atual != f->cabeca) {
-        if (atual->id == id) return atual->idade;
-        atual = atual->prox;
-    }
-    return -1;
-}
+
 
 
 
@@ -155,12 +148,50 @@ bool atenderPrimeiraDaFila(PFILA f, int* id){
 }
 
 
-
 bool desistirDaFila(PFILA f, int id){
+    PONT pos = buscarID(f,id);
 
+    if(pos == NULL) // a funcao buscarID retorna o ponteiro para o id, caso ele exista
+        return false;
 
+    // remover pos
+    if(tamanho(f) == 1){ // reinicializa lista
+        f->cabeca->prox = f->cabeca;
+        f->cabeca->ant = f->cabeca;
+        f->inicioNaoPref = f->cabeca;
+        free(pos);
+        return true;
+    }
 
-    return false;
+    // remover ultimo elemento
+    if(pos->prox == f->cabeca){
+        if(f->inicioNaoPref == pos)  // caso o ultimo elemento seja o inicio nao preferencial
+            f->inicioNaoPref = f->cabeca;
+        pos->ant->prox = f->cabeca;
+        f->cabeca = pos->ant;
+        free(pos);
+        return true;
+    }
+
+    // remover primeiro elemento
+    if(f->cabeca->prox == pos){
+        if(f->inicioNaoPref == pos) // caso primeiro elemento seja o inicio nao preferencial
+            f->inicioNaoPref = pos->prox;
+        f->cabeca->prox = pos->prox;
+        pos->prox->ant = f->cabeca;
+        free(pos);
+        return true;
+    }
+
+    // remover elemento no meio da fila
+    else{
+        if(f->inicioNaoPref == pos)
+            f->inicioNaoPref = pos->prox;
+        pos->prox->ant = pos->ant;
+        pos->ant->prox = pos->prox;
+        free(pos);
+        return true;
+    }
 }
 
 
@@ -171,37 +202,51 @@ int main(){
 
     PONT f = criarFila();
     bool res;
-    
-    // TESTE DE INSERÇÃO 
-    
+    int id;
+    int idade;
+
+    printf("################# INSERINDO PARTE 2 ###############\n");
     exibirLog(f);
-    res = inserirPessoaNaFila(f, -1, -2);
-    if(res) printf("Insercao retornou true (0).\n");
-    else printf("Insercao retornou false (0). [OK]\n");
+    res = inserirPessoaNaFila(f, 7, 72);
+    if(res) printf("Insercao retornou true (14). [OK]\n");
+    else printf("Insercao retornou false (14).\n");
     exibirLog(f);
-    res = inserirPessoaNaFila(f, 1, 21);
-    if(res) printf("Insercao retornou true (1). [OK]\n");
-    else printf("Insercao retornou false (1).\n");
+    res = inserirPessoaNaFila(f, 8, 22);
+    if(res) printf("Insercao retornou true (15). [OK]\n");
+    else printf("Insercao retornou false (15).\n");
     exibirLog(f);
-    res = inserirPessoaNaFila(f, 2, 11);
-    if(res) printf("Insercao retornou true (2). [OK]\n");
-    else printf("Insercao retornou false (2).\n");
+    res = inserirPessoaNaFila(f, 9, 60);
+    if(res) printf("Insercao retornou true (16). [OK]\n");
+    else printf("Insercao retornou false (16).\n");
     exibirLog(f);
-    res = inserirPessoaNaFila(f, 3, 31);
-    if(res) printf("Insercao retornou true (3). [OK]\n");
-    else printf("Insercao retornou false (3).\n");
+    res = inserirPessoaNaFila(f, 10, 42);
+    if(res) printf("Insercao retornou true (17). [OK]\n");
+    else printf("Insercao retornou false (17).\n");
     exibirLog(f);
-    res = inserirPessoaNaFila(f, 4, 71);
-    if(res) printf("Insercao retornou true (4). [OK]\n");
-    else printf("Insercao retornou false (4).\n");
+
+
+    printf("################# SAINDO DA FILA ##################\n");
+
     exibirLog(f);
-    res = inserirPessoaNaFila(f, 5, 61);
-    if(res) printf("Insercao retornou true (5). [OK]\n");
-    else printf("Insercao retornou false (5).\n");
+    res = desistirDaFila(f, 6);
+    if(res) printf("Desistindo da fila retornou true (18).\n");
+    else printf("Desistindo da fila retornou false (18). [OK]\n");
     exibirLog(f);
-    res = inserirPessoaNaFila(f, 6, 81);
-    if(res) printf("Insercao retornou true (6). [OK]\n");
-    else printf("Insercao retornou false (6).\n");
+    res = desistirDaFila(f, 7);
+    if(res) printf("Desistindo da fila retornou true (19). [OK]\n");
+    else printf("Desistindo da fila retornou false (19).\n");
+    exibirLog(f);
+    res = desistirDaFila(f, 8);
+    if(res) printf("Desistindo da fila retornou true (20). [OK]\n");
+    else printf("Desistindo da fila retornou false (20).\n");
+    exibirLog(f);
+    res = desistirDaFila(f, 9);
+    if(res) printf("Desistindo da fila retornou true (21). [OK]\n");
+    else printf("Desistindo da fila retornou false (21).\n");
+    exibirLog(f);
+    res = desistirDaFila(f, 10);
+    if(res) printf("Desistindo da fila retornou true (22). [OK]\n");
+    else printf("Desistindo da fila retornou false (22).\n");
     exibirLog(f);
 
 
