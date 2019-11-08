@@ -124,12 +124,36 @@ bool inserirPessoaNaFila(PFILA f, int id, int idade){
 
 
 bool atenderPrimeiraDaFila(PFILA f, int* id){
+    PONT p = f->cabeca;
+    if(tamanho(f) == 0)
+        return false;
 
+    *id = p->prox->id;
 
+    p = p->prox; // elemento a ser excluido (proximo da cabeca)
 
-
-    return false;
+    if(tamanho(f) == 1){ // reinicializa lista
+        f->cabeca->prox = f->cabeca;
+        f->cabeca->ant = f->cabeca;
+        f->inicioNaoPref = f->cabeca;
+        free(p);
+        return true;
+    }
+    else if(p->prox->idade >= IDADEPREFERENCIAL){ // proximo da fila é preferencial -> apenas arrumar ponteiros
+        f->cabeca->prox = p->prox;
+        p->prox->ant = f->cabeca;
+        free(p);
+        return true;
+    }else{
+        //proximo da fila nao é preferencial -> arrumar ponteiros e inicio da fila nao preferencial
+        f->cabeca->prox = p->prox;
+        p->prox->ant = f->cabeca;
+        f->inicioNaoPref = f->cabeca->prox;
+        free(p);
+        return true;
+    }
 }
+
 
 
 bool desistirDaFila(PFILA f, int id){
@@ -147,7 +171,9 @@ int main(){
 
     PONT f = criarFila();
     bool res;
-
+    
+    // TESTE DE INSERÇÃO 
+    
     exibirLog(f);
     res = inserirPessoaNaFila(f, -1, -2);
     if(res) printf("Insercao retornou true (0).\n");
